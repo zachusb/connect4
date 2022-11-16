@@ -1,0 +1,9 @@
+isFilled(this.grid.row){
+    if(this.grid.color == "null"){
+        this.grid.color = "color"
+    }
+    else {
+        1 + isFilled(this.grid.row)
+    }
+
+}

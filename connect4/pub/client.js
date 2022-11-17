@@ -8,9 +8,6 @@ let myApp = Vue.createApp({
 				{id: 22, color: "null", row: 3}, {id: 23, color: "null", row: 3}, {id: 24, color: "null", row: 3}, {id: 25, color: "null", row: 3}, {id: 26, color: "null", row: 3}, {id: 27, color: "null", row: 3}, {id: 28, color: "null", row: 3},
 				{id: 29, color: "null", row: 2}, {id: 30, color: "null", row: 2}, {id: 31, color: "null", row: 2}, {id: 32, color: "null", row: 2}, {id: 33, color: "null", row: 2}, {id: 34, color: "null", row: 2}, {id: 35, color: "null", row: 2},
 				{id: 36, color: "null", row: 1}, {id: 37, color: "null", row: 1}, {id: 38, color: "null", row: 1}, {id: 39, color: "null", row: 1}, {id: 40, color: "null", row: 1}, {id: 41, color: "null", row: 1}, {id: 42, color: "null", row: 1}
-			],
-			buttonArray: [
-				{column: 1}, {column: 2}, {column: 3}, {column: 4}, {column: 5}, {column: 6}, {column: 7}
 			]
         };
 	},
@@ -30,7 +27,9 @@ let myApp = Vue.createApp({
 			return column + (7 * 5);
 		},  
     },
-	computed: {},
+	computed: {
+
+	},
 	mounted() {
         
     }

@@ -24,8 +24,8 @@
             <button id="button7" class="button" @click="addChip(7)">Add chip</button>
         </div>
         <div class="game-grid">
-            <div class="spot" v-for="spot in grid">
-                
+            <div class="spot" v-for="spot in grid" v-bind:class="{black: checkForColor(spot.color) == 2, red: checkForColor(spot.color) == 1, white: checkForColor(spot.color) == 0}">
+
             </div>
         </div>
     </div>

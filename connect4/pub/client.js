@@ -18,14 +18,25 @@ let myApp = Vue.createApp({
 				bottomId -= 7;
 				if(bottomId < 1){
 					console.log("Row is full!");
-					break;
+					return;
 				}
 			}
 			this.grid[bottomId - 1].color = "black";
 		},
 		findBottomId(column) {
 			return column + (7 * 5);
-		},  
+		},
+		checkForColor(color) {
+			if (color == 'black') {
+                return 2;
+            }
+            else if(color == 'red') {
+                return 1;
+            }
+            else{
+                return 0;
+            }
+		}
     },
 	computed: {
 

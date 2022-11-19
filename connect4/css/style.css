@@ -30,7 +30,7 @@
 
 .spot {
     border: 5px solid #334EE8;
-    background-color: white;
+    background-color: black;
     border-radius: 100px;
     font-family: Helvetica;
     font-weight: bold;
@@ -39,4 +39,16 @@
     justify-content: center;
     align-items: center;
     margin: 5px;
+}
+
+.white {
+    background-color: white;
+}
+
+.red {
+    background-color: red;
+}
+
+.black {
+    background-color: black;
 }

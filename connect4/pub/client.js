@@ -1,3 +1,12 @@
+let socket = io();
+
+socket.on("sayBack", function(dataFromServer) {
+	console.log("The server said: " + dataFromServer);
+});
+
+socket.emit("saySomething", "Hello");
+
+
 let myApp = Vue.createApp({
 	data() {
 		return {
@@ -8,7 +17,11 @@ let myApp = Vue.createApp({
 				{id: 22, color: "null", row: 3}, {id: 23, color: "null", row: 3}, {id: 24, color: "null", row: 3}, {id: 25, color: "null", row: 3}, {id: 26, color: "null", row: 3}, {id: 27, color: "null", row: 3}, {id: 28, color: "null", row: 3},
 				{id: 29, color: "null", row: 2}, {id: 30, color: "null", row: 2}, {id: 31, color: "null", row: 2}, {id: 32, color: "null", row: 2}, {id: 33, color: "null", row: 2}, {id: 34, color: "null", row: 2}, {id: 35, color: "null", row: 2},
 				{id: 36, color: "null", row: 1}, {id: 37, color: "null", row: 1}, {id: 38, color: "null", row: 1}, {id: 39, color: "null", row: 1}, {id: 40, color: "null", row: 1}, {id: 41, color: "null", row: 1}, {id: 42, color: "null", row: 1}
-			]
+			],
+			gameStatus: "Waiting on player to join...",
+			userList: null,
+			username: null,
+			test: null
         };
 	},
 	methods: {
@@ -36,12 +49,20 @@ let myApp = Vue.createApp({
             else{
                 return 0;
             }
-		}
+		},
+		
     },
 	computed: {
-
+		
 	},
 	mounted() {
-        
+        socket.on("sendName", (dataFromServer) => {
+			this.username = dataFromServer;
+		});
+		socket.on("clearBoard", function() {
+			for(let i = 0; i < 42; ++i) {
+				this.grid[i].color = "null";
+			}
+		})	
     }
 }).mount("#app");

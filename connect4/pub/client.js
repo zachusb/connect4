@@ -59,7 +59,7 @@ let myApp = Vue.createApp({
         socket.on("sendName", (dataFromServer) => {
 			this.username = dataFromServer;
 		});
-		socket.on("clearBoard", function() {
+		socket.on("clearBoard", () => {
 			for(let i = 0; i < 42; ++i) {
 				this.grid[i].color = "null";
 			}

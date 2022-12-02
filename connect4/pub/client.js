@@ -21,7 +21,8 @@ let myApp = Vue.createApp({
 			gameStatus: "Waiting on player to join...",
 			userList: null,
 			username: null,
-			test: null
+			test: null,
+			currentPlayer: null
         };
 	},
 	methods: {
@@ -63,6 +64,9 @@ let myApp = Vue.createApp({
 			for(let i = 0; i < 42; ++i) {
 				this.grid[i].color = "null";
 			}
-		})	
+		});
+		socket.on("whosTurnIsIt", (dataFromServer) => {
+			this.currentPlayer = dataFromServer;
+		})
     }
 }).mount("#app");

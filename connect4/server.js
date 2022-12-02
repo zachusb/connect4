@@ -12,6 +12,19 @@ app.use(express.static("pub"));
 
 let userList = {};
 let connectCounter = 0;
+let adjectives = ["Stanky", "Nasty", "Dank", "Wet", "Fuzzy", "Musty"];
+let noun = ["Wampus", "Slime", "Octopus", "Creep", "Tortoise"];
+let userQueue = [];
+let playerOne = userQueue[0].userList.username;
+let playerTwo = userQueue[1].userList.username;
+
+function randomFromArray(arr) {
+	return arr[Math.floor(arr.length * Math.random())];
+}
+
+function randomUser() {
+	return randomFromArray(adjectives) + randomFromArray(noun);
+}
 
 io.on("connection", function(socket) {
 	++connectCounter;
@@ -21,20 +34,14 @@ io.on("connection", function(socket) {
 	console.log("Connected with id " + socket.id);
 	console.log(connectCounter + " players connected")
 	userList[socket.id] = {
-		username: null,
-		roundsPlayed: null,
-		roundsCorrect: null,
-		roundsWon: null,
-		correctThisRound: false,
-		wonThisRound: false
+		username: randomUser(),
 	};
-	userList[socket.id].username = connectCounter;
+	userQueue.push(userList[socket.id].username);
+	
 
 	
 
 	socket.on("disconnect", function() {
-		//This particular socket connection was terminated (probably the client went to a different page
-		//or closed their browser).
 		--connectCounter;
 		console.log(connectCounter + " players connected")
 		console.log("Id " + socket.id + " disconnected.");
@@ -43,8 +50,6 @@ io.on("connection", function(socket) {
 	socket.on("saySomething", function(dataFromClient) {
 		console.log(dataFromClient);
 		var s = new Date();
-		//socket.emit() sends back to that same client.
-		//io.emit() sends back to all clients.
 		socket.emit("sayBack", "From server, time="+s+": " + dataFromClient);
 	});
 
@@ -62,6 +67,7 @@ function startGame() {
 
 function playerOneTurn() {
 	//io.emit to tell who's turn it is
+	io.emit("whosTurnIsIt", playerOne);
 	//update board when button is pressed
 	//if won then gameover
 	//else pass to player two

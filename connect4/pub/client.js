@@ -22,7 +22,8 @@ let myApp = Vue.createApp({
 			userList: null,
 			username: null,
 			test: null,
-			currentPlayer: null
+			currentPlayerName: null,
+			currentPlayerNumber: 0
         };
 	},
 	methods: {
@@ -34,6 +35,18 @@ let myApp = Vue.createApp({
 					console.log("Row is full!");
 					return;
 				}
+			}
+			if(this.currentPlayerNumber == 1){
+				socket.emit("addChip", bottomId, "black");
+				//check for black win
+				if(hasWon("black", bottomId)){
+					//socket.emit
+				}
+			}
+			else{
+				socket.emit("addChip", bottomId, "red");
+				//check for red win
+				
 			}
 			this.grid[bottomId - 1].color = "black";
 		},
@@ -51,7 +64,9 @@ let myApp = Vue.createApp({
                 return 0;
             }
 		},
-		
+		hasWon(color, bottomId) {
+			
+		}
     },
 	computed: {
 		
@@ -65,8 +80,12 @@ let myApp = Vue.createApp({
 				this.grid[i].color = "null";
 			}
 		});
-		socket.on("whosTurnIsIt", (dataFromServer) => {
-			this.currentPlayer = dataFromServer;
+		socket.on("whosTurnIsIt", (playerName/*, playerNumber*/) => {
+			this.currentPlayerName = playerName.username;
+			this.currentPlayerNumber = playerName.playerNumber;
+		});
+		socket.on("sendBottomId", (bottomIdFromServer, colorFromServer) => {
+			this.grid[bottomIdFromServer - 1].color = colorFromServer;
 		})
     }
 }).mount("#app");

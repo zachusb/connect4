@@ -61,6 +61,11 @@ io.on("connection", function(socket) {
 			playerOneTurn();
 		}
 	});
+
+	socket.on("gameover", (color) => {
+		gameover = true;
+		io.emit("globalGameover",color);
+	});
 	
 	socket.emit("sendName", userList[socket.id].username);
 	if(connectCounter == 2){

@@ -21,7 +21,7 @@ let myApp = Vue.createApp({
 			gameStatus: "Waiting on player to join...",
 			userList: null,
 			username: null,
-			test: null,
+			winner: false,
 			currentPlayerName: null,
 			currentPlayerNumber: 0
         };
@@ -39,14 +39,18 @@ let myApp = Vue.createApp({
 			if(this.currentPlayerNumber == 1){
 				socket.emit("addChip", bottomId, "black");
 				//check for black win
-				if(hasWon("black", bottomId)){
-					//socket.emit
+				this.hasWon("black", bottomId);
+				if(this.winner == true){
+					socket.emit("gameover", "black");
 				}
 			}
 			else{
 				socket.emit("addChip", bottomId, "red");
 				//check for red win
-				
+				this.hasWon("red", bottomId);
+				if(this.winner == true){
+					socket.emit("gameover", "red");
+				}
 			}
 			this.grid[bottomId - 1].color = "black";
 		},
@@ -65,7 +69,61 @@ let myApp = Vue.createApp({
             }
 		},
 		hasWon(color, bottomId) {
-			
+			//let startId = this.grid[bottomId - 1].id;
+			let startRow = this.grid[bottomId - 1].row;
+			let horizontalTotal = 1;
+			let verticalTotal = 1;
+			try{
+				for(let i = 0; i < 3; ++i){
+					//check right
+					if(this.grid[bottomId + i].row == startRow && this.grid[bottomId + i].color == color){
+						horizontalTotal++;
+					}
+					else{
+						break;
+					}
+					if(horizontalTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+			try{
+				for(let i = 2; i < 5; ++i){
+					//check left
+					if(this.grid[bottomId - i].color == color && this.grid[bottomId - i].row == startRow){
+						horizontalTotal++;
+					}
+					else{
+						break;
+					}
+					if(horizontalTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+			try{
+				for(let i = 0; i < 3; ++i){
+					//check up
+					if(this.grid[bottomId + i].color == color && this.grid[bottomId - i].row > 0){
+						verticalTotal++;
+					}
+					else{
+						break;
+					}
+					if(verticalTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
 		}
     },
 	computed: {
@@ -86,6 +144,9 @@ let myApp = Vue.createApp({
 		});
 		socket.on("sendBottomId", (bottomIdFromServer, colorFromServer) => {
 			this.grid[bottomIdFromServer - 1].color = colorFromServer;
-		})
+		});
+		socket.on("globalGameover", (color) => {
+			this.gameStatus = color + " won!";
+		});
     }
 }).mount("#app");

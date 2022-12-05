@@ -73,9 +73,57 @@ let myApp = Vue.createApp({
 			let startRow = this.grid[bottomId - 1].row;
 			let horizontalTotal = 1;
 			let verticalTotal = 1;
+			let bottomLeftToTopRightTotal = 1;
+			this.checkRightAndLeft(color, bottomId, startRow);
+			this.checkDown(color, bottomId);
+			this.checkBottomLeftToTopRight(color, bottomId);
+			this.checkTopLeftToBottomRight(color, bottomId);
+			
+			/*
+			Might not need this
+			try{
+				for(let i = 0; i < 42; i =- 6){
+					//check up
+					if(this.grid[bottomId - i].color == color && this.grid[bottomId - i].row < 7){
+						verticalTotal++;
+					}
+					else{
+						break;
+					}
+					if(verticalTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+			*/
+			
+			/*
+			try{
+				for(let i = 5; i < 42; ++5){
+					//check Bottom left
+					if(this.grid[bottomId + i].color == color && this.grid[bottomId + i].row > 0){
+						bottomLeftToTopRightTotal++;
+					}
+					else{
+						break;
+					}
+					if(bottomLeftToTopRightTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+			*/
+		},
+		checkRightAndLeft(color, bottomId, startRow){
+			let horizontalTotal = 1;
 			try{
 				for(let i = 0; i < 3; ++i){
-					//check right
 					if(this.grid[bottomId + i].row == startRow && this.grid[bottomId + i].color == color){
 						horizontalTotal++;
 					}
@@ -92,7 +140,6 @@ let myApp = Vue.createApp({
 			}
 			try{
 				for(let i = 2; i < 5; ++i){
-					//check left
 					if(this.grid[bottomId - i].color == color && this.grid[bottomId - i].row == startRow){
 						horizontalTotal++;
 					}
@@ -107,16 +154,93 @@ let myApp = Vue.createApp({
 			catch(e){
 				console.log(e);
 			}
+		},
+		
+		checkDown(color, bottomId) {
+			let verticalTotal = 1;
 			try{
-				for(let i = 0; i < 3; ++i){
-					//check up
-					if(this.grid[bottomId + i].color == color && this.grid[bottomId - i].row > 0){
+				for(let i = 6; i < 42; i += 7){
+					if(this.grid[bottomId + i].color == color && this.grid[bottomId + i].row > 0){
 						verticalTotal++;
 					}
 					else{
 						break;
 					}
 					if(verticalTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+		},
+		checkBottomLeftToTopRight(color, bottomId) {
+			let bottomLeftToTopRightTotal = 1;
+			try{
+				for(let i = 5; i < 42; i += 6){
+					//check bottom left
+					if(this.grid[bottomId + i].color == color && this.grid[bottomId + i].row > 0){
+						bottomLeftToTopRightTotal++;
+					}
+					else{
+						break;
+					}
+					if(bottomLeftToTopRightTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+			try{
+				for(let i = 7; i < 42; i += 6){
+					//check top right
+					if(this.grid[bottomId - i].color == color && this.grid[bottomId - i].row < 7){
+						bottomLeftToTopRightTotal++;
+					}
+					else{
+						break;
+					}
+					if(bottomLeftToTopRightTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+		},
+		checkTopLeftToBottomRight(color, bottomId) {
+			let topLeftToBottomRightTotal = 1;
+			try{
+				for(let i = 9; i < 42; i += 8){
+					//check top left
+					if(this.grid[bottomId - i].color == color && this.grid[bottomId - i].row < 7){
+						topLeftToBottomRightTotal++;
+					}
+					else{
+						break;
+					}
+					if(topLeftToBottomRightTotal == 4){
+						this.winner = true;
+					}
+				}
+			}
+			catch(e){
+				console.log(e);
+			}
+			try{
+				for(let i = 7; i < 42; i += 8){
+					//check bottom right
+					if(this.grid[bottomId + i].color == color && this.grid[bottomId + i].row > 0){
+						topLeftToBottomRightTotal++;
+					}
+					else{
+						break;
+					}
+					if(topLeftToBottomRightTotal == 4){
 						this.winner = true;
 					}
 				}

@@ -1,12 +1,5 @@
 let socket = io();
 
-socket.on("sayBack", function(dataFromServer) {
-	console.log("The server said: " + dataFromServer);
-});
-
-socket.emit("saySomething", "Hello");
-
-
 let myApp = Vue.createApp({
 	data() {
 		return {
@@ -69,56 +62,12 @@ let myApp = Vue.createApp({
             }
 		},
 		hasWon(color, bottomId) {
-			//let startId = this.grid[bottomId - 1].id;
 			let startRow = this.grid[bottomId - 1].row;
-			let horizontalTotal = 1;
-			let verticalTotal = 1;
-			let bottomLeftToTopRightTotal = 1;
 			this.checkRightAndLeft(color, bottomId, startRow);
 			this.checkDown(color, bottomId);
 			this.checkBottomLeftToTopRight(color, bottomId);
 			this.checkTopLeftToBottomRight(color, bottomId);
 			
-			/*
-			Might not need this
-			try{
-				for(let i = 0; i < 42; i =- 6){
-					//check up
-					if(this.grid[bottomId - i].color == color && this.grid[bottomId - i].row < 7){
-						verticalTotal++;
-					}
-					else{
-						break;
-					}
-					if(verticalTotal == 4){
-						this.winner = true;
-					}
-				}
-			}
-			catch(e){
-				console.log(e);
-			}
-			*/
-			
-			/*
-			try{
-				for(let i = 5; i < 42; ++5){
-					//check Bottom left
-					if(this.grid[bottomId + i].color == color && this.grid[bottomId + i].row > 0){
-						bottomLeftToTopRightTotal++;
-					}
-					else{
-						break;
-					}
-					if(bottomLeftToTopRightTotal == 4){
-						this.winner = true;
-					}
-				}
-			}
-			catch(e){
-				console.log(e);
-			}
-			*/
 		},
 		checkRightAndLeft(color, bottomId, startRow){
 			let horizontalTotal = 1;
@@ -262,7 +211,7 @@ let myApp = Vue.createApp({
 				this.grid[i].color = "null";
 			}
 		});
-		socket.on("whosTurnIsIt", (playerName/*, playerNumber*/) => {
+		socket.on("whosTurnIsIt", (playerName) => {
 			this.currentPlayerName = playerName.username;
 			this.currentPlayerNumber = playerName.playerNumber;
 		});

@@ -46,12 +46,6 @@ io.on("connection", function(socket) {
 		delete userList[socket.id];
 	});
 
-	socket.on("saySomething", function(dataFromClient) {
-		console.log(dataFromClient);
-		var s = new Date();
-		socket.emit("sayBack", "From server, time="+s+": " + dataFromClient);
-	});
-
 	socket.on("addChip", (bottomId, color) => {
 		io.emit("sendBottomId", bottomId, color);
 		if(color == "black"){
@@ -80,8 +74,6 @@ function startGame() {
 	//Player one starts
 	playerOne = userList[userQueue[0]];
 	playerTwo = userList[userQueue[1]];
-	//playerOne.playerNumber = 1;
-	//playerTwo.playerNumber = 2;
 	playerOneTurn();
 }
 
@@ -113,7 +105,7 @@ function playerTwoTurn() {
 
 
 
-server.listen(80, function() {
+server.listen(31415, function() {
 	console.log("Server with socket.io is ready.");
 });
 

@@ -1,3 +1,7 @@
+body {
+    background-color: yellow;
+}
+
 .button-grid {
     display: grid;
     height: 20px;
@@ -16,16 +20,16 @@
 }
 
 .game-grid {
-	width: 525px;
-	height: 450;
-	margin: 0 auto;
+    width: 525px;
+    height: 450;
+    margin: 0 auto;
     background-color: #388AFF;
     color: #fff;
     border: 5px solid #334EE8;
     border-radius: 10px;
-	
-	display: grid;
-	grid-template: repeat(6, 75px) / repeat(7, 75px);
+
+    display: grid;
+    grid-template: repeat(6, 75px) / repeat(7, 75px);
 }
 
 .spot {
@@ -60,4 +64,28 @@
 .enable {
     display: block;
     background-color: green;
+}
+
+/*HEADER STYLING*/
+@font-face {
+    font-family: face;
+    src: url(SigmarOne-Regular.ttf);
+}
+
+#header {
+    background-color: yellow;
+}
+
+#c4 {
+    text-align: center;
+    margin: 0;
+    font-family: face;
+    font-size: 60px;
+    color: #334EE8;
+    text-shadow: black 1px 0 0;
+}
+
+#gamestat {
+    text-align: center;
+    margin: 0;
 }

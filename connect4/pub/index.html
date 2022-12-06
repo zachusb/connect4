@@ -15,9 +15,9 @@
         
         <h3>{{gameStatus}}</h3>
         <h3>Username: {{username}}</h3>
-        <h3>{{test}}</h3>
-        <h3>It is currently {{currentPlayerName}}'s turn</h3>
-        <div class="button-grid">
+        <h3 v-if="winner == true">Plz wait for new game to start</h3>
+        <h3 v-else></h3>
+        <div v-bind:class="{enable: checkIfCurrentPlayer() == true, disable: checkIfCurrentPlayer() == false}" class="button-grid">
             <button id="button1" class="button" @click="addChip(1)">Add chip</button>
             <button id="button2" class="button" @click="addChip(2)">Add chip</button>
             <button id="button3" class="button" @click="addChip(3)">Add chip</button>

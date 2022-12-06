@@ -53,3 +53,11 @@
     background-color: black;
 }
 
+.disable {
+    background-color: red;
+}
+
+.enable {
+    display: block;
+    background-color: green;
+}

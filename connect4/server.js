@@ -10,8 +10,8 @@ app.use(express.static("pub"));
 
 let userList = {};
 let connectCounter = 0;
-let adjectives = ["Stanky", "Nasty", "Dank", "Wet", "Fuzzy", "Musty", "Tasty"];
-let noun = ["Wampus", "Slime", "Octopus", "Creep", "Tortoise"];
+let adjectives = ["Wafty", "Nasty", "Lurking", "Wet", "Fuzzy", "Musty", "Tasty"];
+let noun = ["Wampus", "Slime", "Octopus", "Creep", "Tortoise", "Doorknob"];
 let userQueue = [];
 let playerOne;
 let playerTwo;
@@ -25,6 +25,10 @@ function randomUser() {
 	return randomFromArray(adjectives) + randomFromArray(noun);
 }
 
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+ }
+
 io.on("connection", function(socket) {
 	++connectCounter;
 	
@@ -32,15 +36,19 @@ io.on("connection", function(socket) {
 	console.log(connectCounter + " players connected")
 	userList[socket.id] = {
 		username: randomUser(),
-		playerNumber: 2
+		playerNumber: 0
 	};
 	userQueue.push(socket.id);
+		
 	
-
+	
 	socket.on("disconnect", function() {
 		--connectCounter;
 		console.log(connectCounter + " players connected")
 		console.log("Id " + socket.id + " disconnected.");
+		if(socket.id == userQueue[0] || socket.id == userQueue[1]){
+			io.emit("globalGameover", "Player left!");
+		}
 		let i = userQueue.indexOf(socket.id);
 		userQueue.splice(i, 1);
 		delete userList[socket.id];
@@ -56,12 +64,26 @@ io.on("connection", function(socket) {
 		}
 	});
 
-	socket.on("gameover", (color) => {
+	socket.on("gameover", async (color) => {
 		gameover = true;
-		io.emit("globalGameover",color);
+		if(color == "tie"){
+			io.emit("globalGameover", "Tie!");
+		}
+		else{
+			io.emit("globalGameover", color);
+		}
+		//io.emit(next game will begin shortly)
+		await sleep(5000);
+		//io.emit("clearBoard");
+		if(userQueue.length > 2){
+			let firstElement = userQueue.shift();
+			userQueue[userQueue.length] = firstElement;
+		}
+		io.emit("reset");
+		startGame();
 	});
 	
-	socket.emit("sendName", userList[socket.id].username);
+	socket.emit("sendName", userList[socket.id]);
 	if(connectCounter == 2){
 		startGame();
 	}
@@ -92,9 +114,9 @@ function playerOneTurn() {
 
 function playerTwoTurn() {
 	//io.emit to tell who's turn it is
-	let two = "two"
-	//playerTwo.playerNumber = 2;
-	io.emit("whosTurnIsIt", playerTwo/*, two*/);
+	
+	playerTwo.playerNumber = 2;
+	io.emit("whosTurnIsIt", playerTwo);
 	//update board when button is pressed
 	//if won then gameover
 	if(gameover){

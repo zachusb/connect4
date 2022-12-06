@@ -14,9 +14,11 @@ let myApp = Vue.createApp({
 			gameStatus: "Waiting on player to join...",
 			userList: null,
 			username: null,
+			playerNumber: 0,
 			winner: false,
 			currentPlayerName: null,
-			currentPlayerNumber: 0
+			currentPlayerNumber: 0,
+			tie: false
         };
 	},
 	methods: {
@@ -36,6 +38,10 @@ let myApp = Vue.createApp({
 				if(this.winner == true){
 					socket.emit("gameover", "black");
 				}
+				this.checkForTie();
+				if(this.tie == true){
+					socket.emit("gameover", "tie");
+				}
 			}
 			else{
 				socket.emit("addChip", bottomId, "red");
@@ -43,6 +49,10 @@ let myApp = Vue.createApp({
 				this.hasWon("red", bottomId);
 				if(this.winner == true){
 					socket.emit("gameover", "red");
+				}
+				this.checkForTie();
+				if(this.tie == true){
+					socket.emit("gameover", "tie");
 				}
 			}
 			this.grid[bottomId - 1].color = "black";
@@ -81,6 +91,7 @@ let myApp = Vue.createApp({
 					}
 					if(horizontalTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
@@ -97,6 +108,7 @@ let myApp = Vue.createApp({
 					}
 					if(horizontalTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
@@ -104,7 +116,6 @@ let myApp = Vue.createApp({
 				console.log(e);
 			}
 		},
-		
 		checkDown(color, bottomId) {
 			let verticalTotal = 1;
 			try{
@@ -117,6 +128,7 @@ let myApp = Vue.createApp({
 					}
 					if(verticalTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
@@ -137,6 +149,7 @@ let myApp = Vue.createApp({
 					}
 					if(bottomLeftToTopRightTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
@@ -174,6 +187,7 @@ let myApp = Vue.createApp({
 					}
 					if(topLeftToBottomRightTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
@@ -191,11 +205,34 @@ let myApp = Vue.createApp({
 					}
 					if(topLeftToBottomRightTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
 			catch(e){
 				console.log(e);
+			}
+		},
+		checkForTie() {
+			let topRowCount = 0;
+			for(let i = 0; i < 7; ++i){
+				if(this.grid[i].row == "black" || this.grid[i].row == "red"){
+					++topRowCount;
+				}
+				else{
+					break;
+				}
+			}
+			if(topRowCount == 7){
+				this.tie = true;
+			}
+		},
+		checkIfCurrentPlayer() {
+			if(this.currentPlayerNumber == this.playerNumber){
+				return true;
+			}
+			if(this.currentPlayerNumber != this.playerNumber){
+				return false;
 			}
 		}
     },
@@ -204,7 +241,8 @@ let myApp = Vue.createApp({
 	},
 	mounted() {
         socket.on("sendName", (dataFromServer) => {
-			this.username = dataFromServer;
+			this.username = dataFromServer.username;
+			this.playerNumber = dataFromServer.playerNumber
 		});
 		socket.on("clearBoard", () => {
 			for(let i = 0; i < 42; ++i) {
@@ -212,6 +250,7 @@ let myApp = Vue.createApp({
 			}
 		});
 		socket.on("whosTurnIsIt", (playerName) => {
+			this.gameStatus = "It is currently " + playerName.username + "'s turn";
 			this.currentPlayerName = playerName.username;
 			this.currentPlayerNumber = playerName.playerNumber;
 		});
@@ -219,7 +258,24 @@ let myApp = Vue.createApp({
 			this.grid[bottomIdFromServer - 1].color = colorFromServer;
 		});
 		socket.on("globalGameover", (color) => {
-			this.gameStatus = color + " won!";
+			if(this.tie == true){
+				this.gameStatus = color;
+			}
+			else if(color == "black" || color == "red"){
+				this.gameStatus = color + " won!";
+			}
+			else{
+				this.gameStatus = color;
+			}
+		});
+		socket.on("reset", () => {
+			this.userList = null;
+			//this.username = null;
+			this.playerNumber = 0;
+			this.winner = false;
+			this.currentPlayerName = null;
+			this.currentPlayerNumber = 0;
+			this.tie = false;
 		});
     }
 }).mount("#app");

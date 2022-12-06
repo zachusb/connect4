@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connect 4</title>
-    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="./styles/style.css" rel="stylesheet" type="text/css">
     <script src="/socket.io/socket.io.js" type="text/javascript"></script>
     <script src="vue.global.js" type="text/javascript"></script>
     <script defer src="client.js" type="text/javascript"></script>
 </head>
+
 <body>
     <div id="app">
-        
-        <h3>{{gameStatus}}</h3>
-        <h3>Username: {{username}}</h3>
-        <h3 v-if="winner == true">Plz wait for new game to start</h3>
-        <h3 v-else></h3>
-        <div class="button-grid">
+        <div id="header">
+            <h1 id="c4">CONNECT<span style="color: red;">4</span>
+            </h1>
+            <h3 id="gamestat">{{gameStatus}}</h3>
+            <h3 id="uname">Username: {{username}}</h3>
+            <h3 id="turn" v-if="winner == true">Plz wait for new game to start</h3>
+            <h3 v-else></h3>
+        </div>
+        <div
+            class="button-grid">
             <button id="button1" class="button" @click="addChip(1)">Add chip</button>
             <button id="button2" class="button" @click="addChip(2)">Add chip</button>
             <button id="button3" class="button" @click="addChip(3)">Add chip</button>
@@ -27,11 +33,13 @@
             <button id="button7" class="button" @click="addChip(7)">Add chip</button>
         </div>
         <div class="game-grid">
-            <div class="spot" v-for="spot in grid" v-bind:class="{black: checkForColor(spot.color) == 2, red: checkForColor(spot.color) == 1, white: checkForColor(spot.color) == 0}">
+            <div class="spot" v-for="spot in grid"
+                v-bind:class="{black: checkForColor(spot.color) == 2, red: checkForColor(spot.color) == 1, white: checkForColor(spot.color) == 0}">
 
             </div>
         </div>
-        
+
     </div>
 </body>
+
 </html>

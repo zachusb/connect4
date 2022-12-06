@@ -5,9 +5,9 @@ body {
 .button-grid {
     display: grid;
     height: 20px;
-    width: 700px;
+    width: 525px;
     margin: 30px auto;
-    grid-template-columns: repeat(7, 100px);
+    grid-template-columns: repeat(7, 75px);
 }
 
 .button {

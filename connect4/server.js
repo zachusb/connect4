@@ -42,16 +42,24 @@ io.on("connection", function(socket) {
 		
 	
 	
-	socket.on("disconnect", function() {
+	socket.on("disconnect", async function() {
 		--connectCounter;
 		console.log(connectCounter + " players connected")
 		console.log("Id " + socket.id + " disconnected.");
 		if(socket.id == userQueue[0] || socket.id == userQueue[1]){
-			io.emit("globalGameover", "Player left!");
+			io.emit("globalGameover", "Player left! Plz wait for next game to start!");
 		}
 		let i = userQueue.indexOf(socket.id);
 		userQueue.splice(i, 1);
 		delete userList[socket.id];
+		await sleep(5000);
+		//io.emit("clearBoard");
+		if(userQueue.length > 2){
+			let firstElement = userQueue.shift();
+			userQueue[userQueue.length] = firstElement;
+		}
+		io.emit("reset");
+		startGame();
 	});
 
 	socket.on("addChip", (bottomId, color) => {

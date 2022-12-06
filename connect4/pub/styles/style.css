@@ -19,6 +19,13 @@ body {
     border-radius: 5px;
 }
 
+.button:hover {
+    cursor: pointer;
+    background-color: #388AFF;
+    /* Green */
+    color: white;
+}
+
 .game-grid {
     width: 525px;
     height: 450;
@@ -86,6 +93,11 @@ body {
 }
 
 #gamestat {
+    text-align: center;
+    margin: 0;
+}
+
+#turn {
     text-align: center;
     margin: 0;
 }

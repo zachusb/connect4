@@ -4,7 +4,7 @@ let myApp = Vue.createApp({
 	data() {
 		return {
 			grid: [
-				{id: 1, color: "null", row: 6}, {id: 2, color: "null", row: 6}, {id: 3, color: "null", row: 6}, {id: 4, color: "null", row: 6}, {id: 5, color: "null", row: 6}, {id: 6, color: "null", row: 6}, {id: 7, color: "null", row: 6},
+				{id: 1, color: "null", row: 6, full: false}, {id: 2, color: "null", row: 6, full: false}, {id: 3, color: "null", row: 6, full: false}, {id: 4, color: "null", row: 6, full: false}, {id: 5, color: "null", row: 6, full: false}, {id: 6, color: "null", row: 6, full: false}, {id: 7, color: "null", row: 6, full: false},
 				{id: 8, color: "null", row: 5}, {id: 9, color: "null", row: 5}, {id: 10, color: "null", row: 5}, {id: 11, color: "null", row: 5}, {id: 12, color: "null", row: 5}, {id: 13, color: "null", row: 5}, {id: 14, color: "null", row: 5},
 				{id: 15, color: "null", row: 4}, {id: 16, color: "null", row: 4}, {id: 17, color: "null", row: 4}, {id: 18, color: "null", row: 4}, {id: 19, color: "null", row: 4}, {id: 21, color: "null", row: 4}, {id: 21, color: "null", row: 4},
 				{id: 22, color: "null", row: 3}, {id: 23, color: "null", row: 3}, {id: 24, color: "null", row: 3}, {id: 25, color: "null", row: 3}, {id: 26, color: "null", row: 3}, {id: 27, color: "null", row: 3}, {id: 28, color: "null", row: 3},
@@ -14,7 +14,7 @@ let myApp = Vue.createApp({
 			gameStatus: "Waiting on player to join...",
 			userList: null,
 			username: null,
-			playerNumber: 0,
+			playerNumber: null,
 			winner: false,
 			currentPlayerName: null,
 			currentPlayerNumber: 0,
@@ -31,6 +31,7 @@ let myApp = Vue.createApp({
 					return;
 				}
 			}
+			this.grid[bottomId - 1].full = true;
 			if(this.currentPlayerNumber == 1){
 				socket.emit("addChip", bottomId, "black");
 				//check for black win
@@ -55,7 +56,7 @@ let myApp = Vue.createApp({
 					socket.emit("gameover", "tie");
 				}
 			}
-			this.grid[bottomId - 1].color = "black";
+			//this.grid[bottomId - 1].color = "black";
 		},
 		findBottomId(column) {
 			return column + (7 * 5);
@@ -167,6 +168,7 @@ let myApp = Vue.createApp({
 					}
 					if(bottomLeftToTopRightTotal == 4){
 						this.winner = true;
+						break;
 					}
 				}
 			}
@@ -216,7 +218,7 @@ let myApp = Vue.createApp({
 		checkForTie() {
 			let topRowCount = 0;
 			for(let i = 0; i < 7; ++i){
-				if(this.grid[i].row == "black" || this.grid[i].row == "red"){
+				if(this.grid[i].full == true){
 					++topRowCount;
 				}
 				else{
@@ -229,10 +231,22 @@ let myApp = Vue.createApp({
 		},
 		checkIfCurrentPlayer() {
 			if(this.currentPlayerNumber == this.playerNumber){
-				return true;
+				document.getElementById("button1").disabled = false;
+				document.getElementById("button2").disabled = false;
+				document.getElementById("button3").disabled = false;
+				document.getElementById("button4").disabled = false;
+				document.getElementById("button5").disabled = false;
+				document.getElementById("button6").disabled = false;
+				document.getElementById("button7").disabled = false;
 			}
 			if(this.currentPlayerNumber != this.playerNumber){
-				return false;
+				document.getElementById("button1").disabled = true;
+				document.getElementById("button2").disabled = true;
+				document.getElementById("button3").disabled = true;
+				document.getElementById("button4").disabled = true;
+				document.getElementById("button5").disabled = true;
+				document.getElementById("button6").disabled = true;
+				document.getElementById("button7").disabled = true;
 			}
 		}
     },
@@ -240,19 +254,25 @@ let myApp = Vue.createApp({
 		
 	},
 	mounted() {
-        socket.on("sendName", (dataFromServer) => {
-			this.username = dataFromServer.username;
-			this.playerNumber = dataFromServer.playerNumber
+        socket.on("sendName", (playerInfo) => {
+			this.username = playerInfo.username;
+			this.playerNumber = playerInfo.playerNumber
 		});
 		socket.on("clearBoard", () => {
 			for(let i = 0; i < 42; ++i) {
 				this.grid[i].color = "null";
 			}
+			for(let i = 0; i < 7; ++i){
+				this.grid[i].full = false;
+			}
 		});
 		socket.on("whosTurnIsIt", (playerName) => {
-			this.gameStatus = "It is currently " + playerName.username + "'s turn";
-			this.currentPlayerName = playerName.username;
-			this.currentPlayerNumber = playerName.playerNumber;
+			if(this.winner == false){
+				this.gameStatus = "It is currently " + playerName.username + "'s turn" + " # " + playerName.playerNumber;
+				this.currentPlayerName = playerName.username;
+				this.currentPlayerNumber = playerName.playerNumber;
+				this.checkIfCurrentPlayer();
+			}
 		});
 		socket.on("sendBottomId", (bottomIdFromServer, colorFromServer) => {
 			this.grid[bottomIdFromServer - 1].color = colorFromServer;
@@ -268,14 +288,20 @@ let myApp = Vue.createApp({
 				this.gameStatus = color;
 			}
 		});
+		socket.on("disableButtons", () => {
+			this.checkIfCurrentPlayer();
+		})
 		socket.on("reset", () => {
 			this.userList = null;
 			//this.username = null;
-			this.playerNumber = 0;
+			//this.playerNumber = 0;
 			this.winner = false;
 			this.currentPlayerName = null;
 			this.currentPlayerNumber = 0;
 			this.tie = false;
+		});
+		socket.on("updatePlayerNumbers", (newPlayerNumber) => {
+			this.playerNumber = newPlayerNumber;
 		});
     }
 }).mount("#app");

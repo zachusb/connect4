@@ -56,8 +56,6 @@ body {
 .black {
     background-color: black;
 }
-<<<<<<< HEAD:connect4/pub/style.css
-=======
 
 .disable {
     background-color: red;
@@ -91,4 +89,3 @@ body {
     text-align: center;
     margin: 0;
 }
->>>>>>> c41170eb8533e1b3696e242346cd83a2f44d4283:connect4/pub/styles/style.css

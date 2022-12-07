@@ -101,3 +101,8 @@ body {
     text-align: center;
     margin: 0;
 }
+
+#uname {
+    text-align: center;
+    margin-top: 10px;
+}

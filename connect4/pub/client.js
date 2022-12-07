@@ -34,7 +34,6 @@ let myApp = Vue.createApp({
 			this.grid[bottomId - 1].full = true;
 			if(this.currentPlayerNumber == 1){
 				socket.emit("addChip", bottomId, "black");
-				//check for black win
 				this.hasWon("black", bottomId);
 				if(this.winner == true){
 					socket.emit("gameover", "black");
@@ -56,7 +55,6 @@ let myApp = Vue.createApp({
 					socket.emit("gameover", "tie");
 				}
 			}
-			//this.grid[bottomId - 1].color = "black";
 		},
 		findBottomId(column) {
 			return column + (7 * 5);
@@ -268,7 +266,7 @@ let myApp = Vue.createApp({
 		});
 		socket.on("whosTurnIsIt", (playerName) => {
 			if(this.winner == false){
-				this.gameStatus = "It is currently " + playerName.username + "'s turn" + " # " + playerName.playerNumber;
+				this.gameStatus = "It is currently " + playerName.username + "'s turn";
 				this.currentPlayerName = playerName.username;
 				this.currentPlayerNumber = playerName.playerNumber;
 				this.checkIfCurrentPlayer();
@@ -293,8 +291,6 @@ let myApp = Vue.createApp({
 		})
 		socket.on("reset", () => {
 			this.userList = null;
-			//this.username = null;
-			//this.playerNumber = 0;
 			this.winner = false;
 			this.currentPlayerName = null;
 			this.currentPlayerNumber = 0;

@@ -88,7 +88,6 @@ io.on("connection", function(socket) {
 		else{
 			io.emit("globalGameover", color);
 		}
-		//io.emit(next game will begin shortly)
 		if(userQueue.length > 2){
 			let firstElement = userQueue.shift();
 			userQueue[userQueue.length] = firstElement;
@@ -113,37 +112,19 @@ io.on("connection", function(socket) {
 });
 
 function startGame() {
-	//Board is cleared
 	io.emit("clearBoard");
 	io.emit("disableButtons");
-	//Player one starts
 	playerOne = userList[userQueue[0]];
 	playerTwo = userList[userQueue[1]];
 	playerOneTurn();
 }
 
 function playerOneTurn() {
-	//io.emit to tell who's turn it is
-	//let one = "one"
-	//playerOne.playerNumber = 1;
 	io.emit("whosTurnIsIt", playerOne);
-	//update board when button is pressed
-	//if won then gameover
-	if(gameover){
-		//do something
-	}
-	//else pass to player two
 }
 
 function playerTwoTurn() {
-	//playerTwo.playerNumber = 2;
 	io.emit("whosTurnIsIt", playerTwo);
-	//update board when button is pressed
-	//if won then gameover
-	if(gameover){
-		//do something
-	}
-	//else pass to player two
 }
 
 
